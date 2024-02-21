@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100;200;300;400;500;600;700;800&display=swap');
+
+@font-face {
+  font-family: "Nebula-Hollow";
+  src: url("./assets/fonts/Nebula-Hollow.otf");
+}
+@font-face {
+  font-family: "Nebula-Regular";
+  src: url("./assets/fonts/Nebula-Regular.otf");
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  html {
+    font-family: "Sora", sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.5px;
+  }
+}
