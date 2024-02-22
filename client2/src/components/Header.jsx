@@ -30,10 +30,10 @@ function Header() {
 
   return (
     <div className="w-full h-24 flex justify-between items-center px-4 lg:px-20">
-      <button className="flex cursor-pointer text-black items-center bg-white px-2 lg:px-6 py-4 h-6 rounded-2xl justify-center">
+      <a target="_blank" href="https://artpassage.ai" className="flex cursor-pointer text-black items-center bg-white px-2 lg:px-6 py-4 h-6 rounded-2xl justify-center">
         <img className="w-4 lg:w-5" src={backIcon} alt="Back Icon " />
         <p className="text-sm lg:text-base ml-2">Home</p>
-      </button>
+      </a>
       <ConnectButton />
       {/* <button
         onClick={() => address? openAccountModal() :  openConnectModal()}
