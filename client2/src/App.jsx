@@ -29,8 +29,8 @@ import { publicProvider } from 'wagmi/providers/public';
 // import { defineConfig, loadEnv } from 'vite';
 
 const { chains, publicClient } = configureChains(
-  [polygonMumbai],
-  // [polygon],
+  // [polygonMumbai],
+   [polygon],
   [
     publicProvider()
   ]

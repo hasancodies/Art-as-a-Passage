@@ -9,8 +9,8 @@ import {
   ConnectButton,
 } from '@rainbow-me/rainbowkit';
 
-const contractAddress = "0xbbBfbb3a2e92f080342C833180b11372e71d0958";
-const baseUrl = "https://gasless-nft-ten.vercel.app/";
+const contractAddress = "0xa93544691c0134520AF6C2bBfF5775617aE4AED4";
+const baseUrl = "https://art-as-a-passage.vercel.app/";
 // const baseUrl = "http://localhost:5000/"
 
 function Form() {
