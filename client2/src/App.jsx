@@ -11,10 +11,13 @@ import Form from "./components/Form";
 
 import '@rainbow-me/rainbowkit/styles.css';
 
+
 import {
+  connectorsForWallets,
   getDefaultWallets,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
+import { coinbaseWallet } from '@rainbow-me/rainbowkit/wallets';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import {
   mainnet,
@@ -35,13 +38,21 @@ const { chains, publicClient } = configureChains(
     publicProvider()
   ]
 );
-
-const { connectors } = getDefaultWallets({
+const projectId  = "9bae6a61ed76de6e2dc5eba428d2745e"
+// const { wallets } = getDefaultWallets();
+const connectors = connectorsForWallets([
+  // ...wallets,
+  {
+    groupName: 'Recommended',
+    wallets: [
+      coinbaseWallet({ projectId, chains }),
+    ],
+  },
+],{
   appName: 'Art Passage',
-  projectId: '9bae6a61ed76de6e2dc5eba428d2745e',
+  projectId,
   chains
 });
-
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
