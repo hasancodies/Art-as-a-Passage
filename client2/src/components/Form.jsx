@@ -82,8 +82,10 @@ function Form() {
       .then((response) => {
         console.log("API response from get request:", response.data);
         setNftStatusData(response.data);
-        if (response.data.hasNft != false && newNftID) {
-          sendNftDataToSheet();
+        if (response.data.hasNft && newNftID) {
+          if (nftStatusData.hasNft === false) {
+            sendNftDataToSheet();
+          }
           setNewNftID(false);
         }
       })
