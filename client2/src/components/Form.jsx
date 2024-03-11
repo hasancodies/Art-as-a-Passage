@@ -81,13 +81,13 @@ function Form() {
       .get(apiUrl)
       .then((response) => {
         console.log("API response from get request:", response.data);
-        setNftStatusData(response.data);
         if (response.data.hasNft && newNftID) {
           if (nftStatusData.hasNft === false) {
+            setNewNftID(false);
             sendNftDataToSheet();
           }
-          setNewNftID(false);
         }
+        setNftStatusData(response.data);
       })
       .catch((error) => {
         setNftStatusData({
