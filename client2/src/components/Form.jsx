@@ -7,11 +7,11 @@ import {
   useAccountModal,
   useChainModal,
   ConnectButton,
-} from '@rainbow-me/rainbowkit';
+} from "@rainbow-me/rainbowkit";
 
 const contractAddress = "0xa93544691c0134520AF6C2bBfF5775617aE4AED4";
 const baseUrl = "https://art-as-a-passage-backend.vercel.app/";
-//const baseUrl = "http://localhost:5000/"
+// const baseUrl = "http://localhost:5000/";
 
 function Form() {
   const { address } = useAccount();
@@ -20,6 +20,7 @@ function Form() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [isMintingLoading, setIsMintingLoading] = useState(false);
+  const [newNftID, setNewNftID] = useState(false);
   const [nftStatusData, setNftStatusData] = useState({
     hasNft: false,
     nftID: null,
@@ -45,41 +46,23 @@ function Form() {
       return false;
     }
     const apiUrl = `${baseUrl}api/mint`;
-    //  const apiUrl = 'http://localhost:5000/api/mint';
+    // const apiUrl = "http://localhost:5000/api/mint";
 
     const postData = {
       userAddress: address,
     };
     setIsMintingLoading(true);
+    setNewNftID(true);
     axios
       .post(apiUrl, postData)
       .then((response) => {
         console.log("API response:", response.data);
         getUseNftStatus(address);
-        alert(response?.data?.message);
       })
       .then(() => {
-        axios
-          .post(
-            "https://sheet.best/api/sheets/383f2606-ef4f-48ad-9bbd-d6a9b91fe2d2",
-            {
-              firstName: firstName,
-              lastName: lastName,
-              email: email,
-              address: address,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          )
-          .then((response) => {
-            console.log("response from google sheet", response);
-          })
-          .catch((error) => {
-            console.log("error", error);
-          });
+        const response = sendNftDataToSheet();
+        console.log("Response from sending data to sheet:", response);
+        alert("NFT Minted Successfully");
       })
       .catch((error) => {
         alert("Server: Something went wrong!!!");
@@ -92,13 +75,17 @@ function Form() {
 
   const getUseNftStatus = (userAddress) => {
     const apiUrl = `${baseUrl}api/mint/${userAddress}`;
-    //  const apiUrl = 'http://localhost:5000/api/mint';
+    // const apiUrl = "http://localhost:5000/api/mint";
 
     axios
       .get(apiUrl)
       .then((response) => {
-        console.log("API response:", response.data);
+        console.log("API response from get request:", response.data);
         setNftStatusData(response.data);
+        if (response.data.hasNft && newNftID) {
+          sendNftDataToSheet();
+          setNewNftID(false);
+        }
       })
       .catch((error) => {
         setNftStatusData({
@@ -107,6 +94,22 @@ function Form() {
         });
         console.error("Error making API request:", error.message);
       });
+  };
+
+  const sendNftDataToSheet = async () => {
+    const formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("address", address);
+    formData.append("nftID", nftStatusData.nftID);
+    const url =
+      "https://script.google.com/macros/s/AKfycbzp0ieNBpxNc-bqT1VkFB_A4xwV7pecSzsimo9DqwDl1atHZc4lhgohXiiH9ZAvjcbPbA/exec";
+    const response = await fetch(url, {
+      method: "POST",
+      body: formData,
+    });
+    return response.json();
   };
 
   useEffect(() => {
