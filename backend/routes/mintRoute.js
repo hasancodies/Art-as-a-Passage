@@ -8,6 +8,10 @@ const contractAddress = process.env.CONTRACT_ADDRESS;
 const privateKey = process.env.PRIVATE_KEY;
 const provider = new ethers.JsonRpcProvider(process.env.POLYGON_RPC_URL);
 
+console.log("CONTRACT ADRESS: ", contractAddress);
+console.log("PRIVATE KEY: ", privateKey);
+console.log("PROVIDER: ", provider);
+
 router.post("/mint", async (req, res) => {
   try {
     const { userAddress } = req.body;

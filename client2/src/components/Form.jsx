@@ -30,81 +30,66 @@ function Form() {
   const handleFirstNameChange = (e) => setFirstName(e.target.value);
   const handleLastNameChange = (e) => setLastName(e.target.value);
   const handleEmailChange = (e) => setEmail(e.target.value);
-
+  console.log("NFT STATUS: ", nftStatusData);
   // Handle form submission
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Perform actions with form data, such as minting the NFT
-
-    console.log("Form submitted with data:", {
-      firstName,
-      lastName,
-      email,
-      address,
-    });
     if (firstName == "" || lastName == "" || email == "") {
       alert("Please provide all details before submitting");
       return false;
     }
-    const apiUrl = `${baseUrl}api/mint`;
-    // const apiUrl = "http://localhost:5000/api/mint";
+    // const apiUrl = `${baseUrl}api/mint`;
+    const apiUrl = "http://localhost:5000/api/mint";
 
-    const postData = {
-      userAddress: address,
-    };
-    setIsMintingLoading(true);
-    setNewNftID(true);
-    axios
-      .post(apiUrl, postData)
-      .then((response) => {
-        console.log("API response:", response.data);
-        getUseNftStatus(address);
-      })
-      .then(() => {
-        const response = sendNftDataToSheet();
-        console.log("Response from sending data to sheet:", response);
-        alert("NFT Minted Successfully");
-      })
-      .catch((error) => {
-        alert("Server: Something went wrong!!!");
-        console.error("Error making API request:", error);
-      })
-      .finally(() => {
-        setIsMintingLoading(false);
-      });
+    try {
+      setIsMintingLoading(true);
+      setNewNftID(() => true);
+      const postData = {
+        userAddress: address,
+      };
+      const response = await axios.post(apiUrl, postData);
+      console.log("API response:", response.data);
+      const responseData = await getUseNftStatus(address);
+      const sheetResponse = sendNftDataToSheet(responseData);
+      console.log("Response from sending data to sheet:", sheetResponse);
+      alert("NFT Minted Successfully");
+    } catch (error) {
+      alert("Server: Something went wrong!!!");
+      console.error("Error making API request:", error);
+    } finally {
+      setIsMintingLoading(false);
+    }
   };
 
-  const getUseNftStatus = (userAddress) => {
-    const apiUrl = `${baseUrl}api/mint/${userAddress}`;
-    // const apiUrl = "http://localhost:5000/api/mint";
-
-    axios
-      .get(apiUrl)
-      .then((response) => {
-        console.log("API response from get request:", response.data);
-        if (response.data.hasNft && newNftID) {
-          if (nftStatusData.hasNft === false) {
-            setNewNftID(false);
-            sendNftDataToSheet();
-          }
-        }
-        setNftStatusData(response.data);
-      })
-      .catch((error) => {
-        setNftStatusData({
-          hasNft: false,
-          nftID: null,
-        });
-        console.error("Error making API request:", error.message);
+  const getUseNftStatus = async (userAddress) => {
+    // const apiUrl = `${baseUrl}api/mint/${userAddress}`;
+    const apiUrl = `http://localhost:5000/api/mint/${userAddress}`;
+    try {
+      const response = await axios.get(apiUrl);
+      console.log("API response from get request:", response.data);
+      setNftStatusData(response.data);
+      if (response.data.hasNft) {
+        setNewNftID(false);
+        return response.data;
+      }
+    } catch (error) {
+      setNftStatusData({
+        hasNft: false,
+        nftID: null,
       });
+      console.error("Error making API request:", error.message);
+    }
   };
 
-  const sendNftDataToSheet = async () => {
+  const sendNftDataToSheet = async (data) => {
+    console.log("NFT DATA: ", data);
+
     const formData = new FormData();
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
     formData.append("email", email);
     formData.append("address", address);
-    formData.append("nftID", nftStatusData.nftID);
+    formData.append("nftID", data.nftID);
     const url =
       "https://script.google.com/macros/s/AKfycbzp0ieNBpxNc-bqT1VkFB_A4xwV7pecSzsimo9DqwDl1atHZc4lhgohXiiH9ZAvjcbPbA/exec";
     const response = await fetch(url, {
