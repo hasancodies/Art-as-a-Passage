@@ -38,8 +38,8 @@ function Form() {
       alert("Please provide all details before submitting");
       return false;
     }
-    // const apiUrl = `${baseUrl}api/mint`;
-    const apiUrl = "http://localhost:5000/api/mint";
+    const apiUrl = `${baseUrl}api/mint`;
+    //const apiUrl = "http://localhost:5000/api/mint";
 
     try {
       setIsMintingLoading(true);
@@ -62,8 +62,8 @@ function Form() {
   };
 
   const getUseNftStatus = async (userAddress) => {
-    // const apiUrl = `${baseUrl}api/mint/${userAddress}`;
-    const apiUrl = `http://localhost:5000/api/mint/${userAddress}`;
+    const apiUrl = `${baseUrl}api/mint/${userAddress}`;
+    //const apiUrl = `http://localhost:5000/api/mint/${userAddress}`;
     try {
       const response = await axios.get(apiUrl);
       console.log("API response from get request:", response.data);
